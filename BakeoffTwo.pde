@@ -79,14 +79,97 @@ void draw()
     fill(255);
     text("NEXT > ", 650, 650); //draw next label
 
-    //my draw code
-    fill(255, 0, 0); //red button
-    rect(width/2-sizeOfInputArea/2, height/2-sizeOfInputArea/2+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2); //draw left red button
-    fill(0, 255, 0); //green button
-    rect(width/2-sizeOfInputArea/2+sizeOfInputArea/2, height/2-sizeOfInputArea/2+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2); //draw right green button
+    drawButtons();
     textAlign(CENTER);
     fill(200);
-    text("" + currentLetter, width/2, height/2-sizeOfInputArea/4); //draw current letter
+    text("" + currentLetter, width/2, height/2-sizeOfInputArea * 2 / 5); //draw current letter
+  }
+}
+
+void drawButtons() {
+  textAlign(CENTER);
+
+  // the keyboard + display area is basically a 5 (row) * 3 (col) grid
+  // |   display area   |
+  // |  _  | abc  | def |
+  // | ghi | jkl  | mno |
+  // |pqrs | tuv  | wxyz|
+  //      |confirm|
+
+  float w = sizeOfInputArea / 3;
+  float h = sizeOfInputArea / 5;
+
+  // draw letter keys
+  fill(100);
+  stroke(255, 0, 0);
+  String[] keys = {"_", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+  for (int i = 0; i < keys.length; i++) {
+    // calculate top-left corner coordinates
+    float x = width / 2 - 1.5 * w + (i % 3) * w;
+    float y = height / 2 - 1.5 * h + (i / 3) * h;
+
+    // draw key background
+    fill(0, 150, 150);
+    rect(x, y, w, h);
+
+    // draw letters
+    fill(0, 255, 0);
+    text(keys[i], x + w / 2, y + h / 2);
+  }
+
+  // draw confirm key
+  fill(255, 0, 0);
+  rect(width / 2 - 0.5 * w, height / 2 + 1.5 * h, w, h);
+  fill(0, 255, 0);
+  textFont(createFont("Arial", 15));
+  text("CONFIRM", width / 2, height / 2 + 2 * h);
+  textFont(createFont("Arial", 24));
+}
+
+String[] getLetterKeys() {
+  String[] keys = {"_", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+  return keys;
+}
+
+String getKeyByCoordinate(float x, float y) {
+  String[] keys = getLetterKeys();
+  
+  float w = sizeOfInputArea / 3;
+  float h = sizeOfInputArea / 5;
+
+  // top-left or keyboard area
+  float leftX = width / 2 - 1.5 * w;
+  float topY = height / 2 - 1.5 * h;
+
+  if (y - topY < 0 || x - leftX < 0) {
+    return "INVALID"; // not within keyboard area 
+  }
+
+  // (row, col) relatively to top-left corner of "SPACE" key
+  int row = int((y - topY) / h);
+  int col = int((x - leftX) / w);
+
+  if (0 <= row && row < 3 && 0 <= col && col < 3) {
+    int idx = 3 * row + col;
+    return keys[idx];
+  } else if (row == 3 && col == 1) {
+    return "CONFIRM";
+  }
+
+  return "INVALID";
+}
+
+void updateCurrentLetterAfterKeyPress(String key) {
+  if (key == "_") {
+    currentLetter = '_';
+  }
+
+  int idx = key.indexOf(currentLetter);
+  if (idx == -1) {
+    currentLetter = key.charAt(0);
+  } else {
+    int newIdx = (idx + 1) % key.length();
+    currentLetter = key.charAt(newIdx);
   }
 }
 
@@ -99,28 +182,22 @@ boolean didMouseClick(float x, float y, float w, float h) //simple function to d
 //my terrible implementation you can entirely replace
 void mousePressed()
 {
-  if (didMouseClick(width/2-sizeOfInputArea/2, height/2-sizeOfInputArea/2+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2)) //check if click in left button
-  {
-    currentLetter --;
-    if (currentLetter<'_') //wrap around to z
-      currentLetter = 'z';
-  }
-
-  if (didMouseClick(width/2-sizeOfInputArea/2+sizeOfInputArea/2, height/2-sizeOfInputArea/2+sizeOfInputArea/2, sizeOfInputArea/2, sizeOfInputArea/2)) //check if click in right button
-  {
-    currentLetter ++;
-    if (currentLetter>'z') //wrap back to space (aka underscore)
-      currentLetter = '_';
-  }
-
-  if (didMouseClick(width/2-sizeOfInputArea/2, height/2-sizeOfInputArea/2, sizeOfInputArea, sizeOfInputArea/2)) //check if click occured in letter area
-  {
-    if (currentLetter=='_') //if underscore, consider that a space bar
-      currentTyped+=" ";
-    else if (currentLetter=='`' & currentTyped.length()>0) //if `, treat that as a delete command
-      currentTyped = currentTyped.substring(0, currentTyped.length()-1);
-    else if (currentLetter!='`') //if not any of the above cases, add the current letter to the typed string
-      currentTyped+=currentLetter;
+  String key = getKeyByCoordinate(mouseX, mouseY);
+  if (key == "CONFIRM") {
+    if (currentLetter == '_') {
+      currentTyped += " ";
+      currentLetter = ' ';
+    } else if (currentLetter == ' ') {
+      // do nothing
+    } else {
+      currentTyped += currentLetter;
+      currentLetter = ' ';
+    }
+  } else if (key == "INVALID") {
+    // System.out.println("ERROR: invalid key coordinates " + mouseX + " " + mouseY);
+  } else {
+    // is a letter key
+    updateCurrentLetterAfterKeyPress(key);
   }
 
   //You are allowed to have a next button outside the 1" area
