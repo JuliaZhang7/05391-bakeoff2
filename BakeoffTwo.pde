@@ -94,7 +94,7 @@ void drawButtons() {
   // |  _  | abc  | def |
   // | ghi | jkl  | mno |
   // |pqrs | tuv  | wxyz|
-  //      |confirm|
+  //       |enter|
 
   float w = sizeOfInputArea / 3;
   float h = sizeOfInputArea / 5;
@@ -117,12 +117,12 @@ void drawButtons() {
     text(keys[i], x + w / 2, y + h / 2);
   }
 
-  // draw confirm key
+  // draw enter key
   fill(255, 0, 0);
   rect(width / 2 - 0.5 * w, height / 2 + 1.5 * h, w, h);
   fill(0, 255, 0);
   textFont(createFont("Arial", 15));
-  text("CONFIRM", width / 2, height / 2 + 2 * h);
+  text("ENTER", width / 2, height / 2 + 2 * h);
   textFont(createFont("Arial", 24));
 }
 
@@ -153,7 +153,7 @@ String getKeyByCoordinate(float x, float y) {
     int idx = 3 * row + col;
     return keys[idx];
   } else if (row == 3 && col == 1) {
-    return "CONFIRM";
+    return "ENTER";
   }
 
   return "INVALID";
@@ -183,7 +183,7 @@ boolean didMouseClick(float x, float y, float w, float h) //simple function to d
 void mousePressed()
 {
   String key = getKeyByCoordinate(mouseX, mouseY);
-  if (key == "CONFIRM") {
+  if (key == "ENTER") {
     if (currentLetter == '_') {
       currentTyped += " ";
       currentLetter = ' ';
