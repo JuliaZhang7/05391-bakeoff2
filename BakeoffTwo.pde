@@ -17,6 +17,8 @@ final int DPIofYourDeviceScreen = 200; //you will need to look up the DPI or PPI
 //http://en.wikipedia.org/wiki/List_of_displays_by_pixel_density
 final float sizeOfInputArea = DPIofYourDeviceScreen*1; //aka, 1.0 inches square!
 PImage watch;
+String currentKey = "";
+boolean anyButtonPressed= (currentKey!="");
 
 //Variables for my silly implementation. You can delete this:
 char currentLetter = 'a';
@@ -91,43 +93,60 @@ void drawButtons() {
 
   // the keyboard + display area is basically a 5 (row) * 3 (col) grid
   // |   display area   |
-  // |  _  | abc  | def |
-  // | ghi | jkl  | mno |
+  // | jkl | abc  | def |
+  // | ghi |  __  | mno |
   // |pqrs | tuv  | wxyz|
-  //       |enter|
 
   float w = sizeOfInputArea / 3;
-  float h = sizeOfInputArea / 5;
+  float h = sizeOfInputArea / 4;
 
   // draw letter keys
   fill(100);
   stroke(255, 0, 0);
-  String[] keys = {"_", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+  String[] keys = {"jkl", "abc", "def", "ghi", "_", "mno", "pqrs", "tuv", "wxyz"};
   for (int i = 0; i < keys.length; i++) {
     // calculate top-left corner coordinates
     float x = width / 2 - 1.5 * w + (i % 3) * w;
-    float y = height / 2 - 1.5 * h + (i / 3) * h;
-
+    float y = height / 2 - 1 * h + (i / 3) * h;
     // draw key background
     fill(0, 150, 150);
     rect(x, y, w, h);
 
     // draw letters
     fill(0, 255, 0);
-    text(keys[i], x + w / 2, y + h / 2);
+    //text(keys[i], x + w / 2, y + h / 2);
+    if (currentKey==keys[i] && keys[i].length()==3){
+      for (int j=0; j < keys[i].length(); j++){
+       
+        textSize(40);
+        fill(0, 408, 612, 816);   
+        text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*30 , y + h / 2);
+        //draw button arond it
+        //fill(0, 150, 150);
+        //rect(x+w/2 + (j-keys[i].length()/2)*30, y + h / 2 -h/3, 30, 30);
+      }
+    } else if (currentKey==keys[i] && keys[i].length()==4){
+      for (int j=0; j < keys[i].length(); j++){
+         
+          textSize(36);
+          fill(0, 408, 612, 816);   
+          text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*20+10 , y + h / 2);
+          //draw button arond it
+          //fill(0, 150, 150);
+          //rect(x+w/2 + (j-keys[i].length()/2)*30, y + h / 2 -h/3, 30, 30);
+        }
+    
+    }
+    else{
+      textSize(30);
+      text(keys[i], x + w / 2, y + h / 2);
+    }
   }
 
-  // draw enter key
-  fill(255, 0, 0);
-  rect(width / 2 - 0.5 * w, height / 2 + 1.5 * h, w, h);
-  fill(0, 255, 0);
-  textFont(createFont("Arial", 15));
-  text("ENTER", width / 2, height / 2 + 2 * h);
-  textFont(createFont("Arial", 24));
 }
 
 String[] getLetterKeys() {
-  String[] keys = {"_", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+  String[] keys = {"jkl", "abc", "def", "ghi", "_", "mno", "pqrs", "tuv", "wxyz"};
   return keys;
 }
 
@@ -139,7 +158,7 @@ String getKeyByCoordinate(float x, float y) {
 
   // top-left or keyboard area
   float leftX = width / 2 - 1.5 * w;
-  float topY = height / 2 - 1.5 * h;
+  float topY = height / 2 - 1 * h;
 
   if (y - topY < 0 || x - leftX < 0) {
     return "INVALID"; // not within keyboard area 
@@ -152,11 +171,51 @@ String getKeyByCoordinate(float x, float y) {
   if (0 <= row && row < 3 && 0 <= col && col < 3) {
     int idx = 3 * row + col;
     return keys[idx];
-  } else if (row == 3 && col == 1) {
-    return "ENTER";
-  }
+  } 
 
   return "INVALID";
+}
+
+char getLetterByCoordinate(String key, float x, float y) {
+
+  float w = sizeOfInputArea / 3;
+  float h = sizeOfInputArea / 4;
+
+  // top-left or keyboard area
+  float leftX = width / 2 - 1.5 * w;
+  float topY = height / 2 - 1 * h;
+
+  //if (y - topY < 0 || x - leftX < 0) {
+  //  return "INVALID"; // not within keyboard area 
+  //}
+
+  // (row, col) relatively to top-left corner of "SPACE" key
+  int row = int((y - topY) / h);
+  int col = int((x - leftX) / w);
+  float num=(x-leftX-w*(col))/w;
+  int idx=0;
+  if (key == "pqrs" || key=="wxyz"){
+    if (num<0.25){idx=0;} 
+    else if (num>0.25 && num<=0.5){idx=1;}
+    else if (num>0.5 && num<=0.75){idx=2; }
+    else {idx=3;}}
+  else{
+  
+    if (num<0.33333){
+      idx=0;
+    } else if (num>0.333333333 && num<0.6666666666){
+      idx=1;
+    }else{
+      idx=2;
+    }
+  }
+  System.out.println("detect col" + col);
+  System.out.println("w:" +w+" x:"+x+ " leftX:"+leftX+" col:"+col+" num:"+num+"   idx:"+idx);
+  //x+w/2 + (j-keys[i].length()/2)*30
+
+  
+   return key.charAt(idx);
+  
 }
 
 void updateCurrentLetterAfterKeyPress(String key) {
@@ -179,25 +238,30 @@ boolean didMouseClick(float x, float y, float w, float h) //simple function to d
   return (mouseX > x && mouseX<x+w && mouseY>y && mouseY<y+h); //check to see if it is in button bounds
 }
 
+
 //my terrible implementation you can entirely replace
 void mousePressed()
 {
   String key = getKeyByCoordinate(mouseX, mouseY);
-  if (key == "ENTER") {
-    if (currentLetter == '_') {
+  
+  if (currentKey == key) {
+    System.out.println("detect same key" + key);
+    if (currentKey == "_") {
+      System.out.println("in loop 1" );
       currentTyped += " ";
       currentLetter = ' ';
-    } else if (currentLetter == ' ') {
-      // do nothing
-    } else {
+    }  else {
+      currentLetter=getLetterByCoordinate(key, mouseX, mouseY);
+      System.out.println("enter letter" + currentLetter);
       currentTyped += currentLetter;
-      currentLetter = ' ';
+      //currentLetter = ' ';
     }
   } else if (key == "INVALID") {
     // System.out.println("ERROR: invalid key coordinates " + mouseX + " " + mouseY);
   } else {
     // is a letter key
-    updateCurrentLetterAfterKeyPress(key);
+    currentKey=key;
+    System.out.println("detect key" + key);
   }
 
   //You are allowed to have a next button outside the 1" area
