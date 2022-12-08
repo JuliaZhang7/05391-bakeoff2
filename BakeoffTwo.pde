@@ -118,9 +118,9 @@ void drawButtons() {
     if (currentKey==keys[i] && keys[i].length()==3){
       for (int j=0; j < keys[i].length(); j++){
        
-        textSize(40);
+        textSize(25);
         fill(0, 408, 612, 816);   
-        text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*30 , y + h / 2);
+        text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*20 , y + h / 2);
         //draw button arond it
         //fill(0, 150, 150);
         //rect(x+w/2 + (j-keys[i].length()/2)*30, y + h / 2 -h/3, 30, 30);
@@ -128,9 +128,9 @@ void drawButtons() {
     } else if (currentKey==keys[i] && keys[i].length()==4){
       for (int j=0; j < keys[i].length(); j++){
          
-          textSize(36);
+          textSize(22);
           fill(0, 408, 612, 816);   
-          text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*20+10 , y + h / 2);
+          text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*14+10 , y + h / 2);
           //draw button arond it
           //fill(0, 150, 150);
           //rect(x+w/2 + (j-keys[i].length()/2)*30, y + h / 2 -h/3, 30, 30);
@@ -138,7 +138,7 @@ void drawButtons() {
     
     }
     else{
-      textSize(30);
+      textSize(20);
       text(keys[i], x + w / 2, y + h / 2);
     }
   }
