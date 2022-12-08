@@ -121,6 +121,7 @@ void drawButtons() {
         textSize(25);
         fill(0, 408, 612, 816);   
         text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*20 , y + h / 2);
+        textSize(24); // revert to default global text size
         //draw button arond it
         //fill(0, 150, 150);
         //rect(x+w/2 + (j-keys[i].length()/2)*30, y + h / 2 -h/3, 30, 30);
@@ -131,6 +132,7 @@ void drawButtons() {
           textSize(22);
           fill(0, 408, 612, 816);   
           text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*14+10 , y + h / 2);
+          textSize(24); // revert to default global text size
           //draw button arond it
           //fill(0, 150, 150);
           //rect(x+w/2 + (j-keys[i].length()/2)*30, y + h / 2 -h/3, 30, 30);
@@ -140,6 +142,7 @@ void drawButtons() {
     else{
       textSize(20);
       text(keys[i], x + w / 2, y + h / 2);
+      textSize(24); // revert to default global text size
     }
   }
 
