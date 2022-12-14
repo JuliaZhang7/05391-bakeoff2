@@ -246,19 +246,20 @@ boolean didMouseClick(float x, float y, float w, float h) //simple function to d
 void mousePressed()
 {
   String key = getKeyByCoordinate(mouseX, mouseY);
+
+  // if the space key is pressed, enter a space immediately
+  if (key == "_") {
+    currentTyped += " ";
+    currentLetter = ' ';
+    currentKey = "_";
+    return;
+  }
   
   if (currentKey == key) {
     System.out.println("detect same key" + key);
-    if (currentKey == "_") {
-      System.out.println("in loop 1" );
-      currentTyped += " ";
-      currentLetter = ' ';
-    }  else {
-      currentLetter=getLetterByCoordinate(key, mouseX, mouseY);
-      System.out.println("enter letter" + currentLetter);
-      currentTyped += currentLetter;
-      //currentLetter = ' ';
-    }
+    currentLetter=getLetterByCoordinate(key, mouseX, mouseY);
+    System.out.println("enter letter" + currentLetter);
+    currentTyped += currentLetter;
   } else if (key == "INVALID") {
     // System.out.println("ERROR: invalid key coordinates " + mouseX + " " + mouseY);
   } else {
