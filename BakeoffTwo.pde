@@ -13,7 +13,7 @@ float lettersExpectedTotal = 0; //a running total of the number of letters expec
 float errorsTotal = 0; //a running total of the number of errors (when hitting next)
 String currentPhrase = ""; //the current target phrase
 String currentTyped = ""; //what the user has typed so far
-final int DPIofYourDeviceScreen = 200; //you will need to look up the DPI or PPI of your device to make sure you get the right scale!!
+final int DPIofYourDeviceScreen = 142; //you will need to look up the DPI or PPI of your device to make sure you get the right scale!!
 //http://en.wikipedia.org/wiki/List_of_displays_by_pixel_density
 final float sizeOfInputArea = DPIofYourDeviceScreen*1; //aka, 1.0 inches square!
 PImage watch;
@@ -99,7 +99,7 @@ void drawButtons() {
 
   float w = sizeOfInputArea / 3;
   float h = sizeOfInputArea / 4;
-  text("<-",  width / 2 + 1 * w ,  height / 2 - 1.2 * h);
+  text("←",  width / 2 + 1 * w ,  height / 2 - 1.2 * h);
 
   // draw letter keys
   fill(100);
@@ -120,9 +120,10 @@ void drawButtons() {
     if (currentKey==keys[i] && keys[i].length()==3){
       for (int j=0; j < keys[i].length(); j++){
        
-        textSize(40);
+        textSize(25);
         fill(0, 408, 612, 816);   
-        text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*30 , y + h / 2);
+        text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*20 , y + h / 2);
+        textSize(24); // revert to default global text size
         //draw button arond it
         //fill(0, 150, 150);
         //rect(x+w/2 + (j-keys[i].length()/2)*30, y + h / 2 -h/3, 30, 30);
@@ -130,9 +131,10 @@ void drawButtons() {
     } else if (currentKey==keys[i] && keys[i].length()==4){
       for (int j=0; j < keys[i].length(); j++){
          
-          textSize(36);
+          textSize(22);
           fill(0, 408, 612, 816);   
-          text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*20+10 , y + h / 2);
+          text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*14+10 , y + h / 2);
+          textSize(24); // revert to default global text size
           //draw button arond it
           //fill(0, 150, 150);
           //rect(x+w/2 + (j-keys[i].length()/2)*30, y + h / 2 -h/3, 30, 30);
@@ -140,8 +142,9 @@ void drawButtons() {
     
     }
     else{
-      textSize(30);
+      textSize(20);
       text(keys[i], x + w / 2, y + h / 2);
+      textSize(24); // revert to default global text size
     }
   }
 
