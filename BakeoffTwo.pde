@@ -13,7 +13,7 @@ float lettersExpectedTotal = 0; //a running total of the number of letters expec
 float errorsTotal = 0; //a running total of the number of errors (when hitting next)
 String currentPhrase = ""; //the current target phrase
 String currentTyped = ""; //what the user has typed so far
-final int DPIofYourDeviceScreen = 142; //you will need to look up the DPI or PPI of your device to make sure you get the right scale!!
+final int DPIofYourDeviceScreen = 200; //you will need to look up the DPI or PPI of your device to make sure you get the right scale!!
 //http://en.wikipedia.org/wiki/List_of_displays_by_pixel_density
 final float sizeOfInputArea = DPIofYourDeviceScreen*1; //aka, 1.0 inches square!
 PImage watch;
@@ -92,13 +92,14 @@ void drawButtons() {
   textAlign(CENTER);
 
   // the keyboard + display area is basically a 5 (row) * 3 (col) grid
-  // |   display area   |
+  // |display area|  <- |
   // | jkl | abc  | def |
   // | ghi |  __  | mno |
   // |pqrs | tuv  | wxyz|
 
   float w = sizeOfInputArea / 3;
   float h = sizeOfInputArea / 4;
+  text("<-",  width / 2 + 1 * w ,  height / 2 - 1.2 * h);
 
   // draw letter keys
   fill(100);
@@ -114,14 +115,14 @@ void drawButtons() {
 
     // draw letters
     fill(0, 255, 0);
+  
     //text(keys[i], x + w / 2, y + h / 2);
     if (currentKey==keys[i] && keys[i].length()==3){
       for (int j=0; j < keys[i].length(); j++){
        
-        textSize(25);
+        textSize(40);
         fill(0, 408, 612, 816);   
-        text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*20 , y + h / 2);
-        textSize(24); // revert to default global text size
+        text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*30 , y + h / 2);
         //draw button arond it
         //fill(0, 150, 150);
         //rect(x+w/2 + (j-keys[i].length()/2)*30, y + h / 2 -h/3, 30, 30);
@@ -129,10 +130,9 @@ void drawButtons() {
     } else if (currentKey==keys[i] && keys[i].length()==4){
       for (int j=0; j < keys[i].length(); j++){
          
-          textSize(22);
+          textSize(36);
           fill(0, 408, 612, 816);   
-          text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*14+10 , y + h / 2);
-          textSize(24); // revert to default global text size
+          text(keys[i].charAt(j), x+w/2 + (j-keys[i].length()/2)*20+10 , y + h / 2);
           //draw button arond it
           //fill(0, 150, 150);
           //rect(x+w/2 + (j-keys[i].length()/2)*30, y + h / 2 -h/3, 30, 30);
@@ -140,9 +140,8 @@ void drawButtons() {
     
     }
     else{
-      textSize(20);
+      textSize(30);
       text(keys[i], x + w / 2, y + h / 2);
-      textSize(24); // revert to default global text size
     }
   }
 
@@ -241,12 +240,23 @@ boolean didMouseClick(float x, float y, float w, float h) //simple function to d
   return (mouseX > x && mouseX<x+w && mouseY>y && mouseY<y+h); //check to see if it is in button bounds
 }
 
-
+void StringDelete(){
+  if (currentTyped != ""){
+    currentTyped=currentTyped.substring(0, currentTyped.length()-1);
+  }
+}
 //my terrible implementation you can entirely replace
 void mousePressed()
 {
+  if (mouseX>width / 2 + 0.5 * sizeOfInputArea / 3 && mouseX<width / 2 + 1.5 * sizeOfInputArea / 3 && mouseY > height / 2 - 2 * ( sizeOfInputArea / 4) && mouseY <height / 2 - 1 * ( sizeOfInputArea / 4) ){
+    System.out.println("delete" );
+    StringDelete();
+  }
+    
+    
+   
+  
   String key = getKeyByCoordinate(mouseX, mouseY);
-
   // if the space key is pressed, enter a space immediately
   if (key == "_") {
     currentTyped += " ";
@@ -257,9 +267,16 @@ void mousePressed()
   
   if (currentKey == key) {
     System.out.println("detect same key" + key);
-    currentLetter=getLetterByCoordinate(key, mouseX, mouseY);
-    System.out.println("enter letter" + currentLetter);
-    currentTyped += currentLetter;
+    if (currentKey == "_") {
+      System.out.println("in loop 1" );
+      currentTyped += " ";
+      currentLetter = ' ';
+    }  else {
+      currentLetter=getLetterByCoordinate(key, mouseX, mouseY);
+      System.out.println("enter letter" + currentLetter);
+      currentTyped += currentLetter;
+      //currentLetter = ' ';
+    }
   } else if (key == "INVALID") {
     // System.out.println("ERROR: invalid key coordinates " + mouseX + " " + mouseY);
   } else {
