@@ -251,7 +251,7 @@ void mousePressed()
   if (key == "_") {
     currentTyped += " ";
     currentLetter = ' ';
-
+    currentKey = "_";
     return;
   }
   
