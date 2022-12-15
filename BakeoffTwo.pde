@@ -23,6 +23,11 @@ boolean anyButtonPressed= (currentKey!="");
 //Variables for my silly implementation. You can delete this:
 char currentLetter = 'a';
 
+PrintWriter output;
+Table table;
+String user_id = "1";
+String fileName;
+
 //You can modify anything in here. This is just a basic implementation.
 void setup()
 {
@@ -35,6 +40,21 @@ void setup()
   size(800, 800); //Sets the size of the app. You should modify this to your device's native size. Many phones today are 1080 wide by 1920 tall.
   textFont(createFont("Arial", 24)); //set the font to arial 24. Creating fonts is expensive, so make difference sizes once in setup, not draw
   noStroke(); //my code doesn't use any strokes
+
+  // define csv schema; code taken from DHCS slack by Dhruti Kuchibhotla
+  fileName = "v2_performance_" + str(hour()) + "_" + str(minute()) + "_" + str(second()) + ".csv";
+  output = createWriter(fileName);
+  table = new Table();
+  table.addColumn("user_ID", Table.STRING);
+  table.addColumn("cycle_number", Table.INT);
+  table.addColumn("Total time taken", Table.FLOAT);
+  table.addColumn("Total letters entered", Table.FLOAT);
+  table.addColumn("Total letters expected", Table.FLOAT);
+  table.addColumn("Total errors entered", Table.FLOAT);
+  table.addColumn("Raw WPM", Table.FLOAT);
+  table.addColumn("Freebie errors", Table.FLOAT);
+  table.addColumn("Penalty", Table.FLOAT);
+  table.addColumn("WPM w/ penalty", Table.FLOAT);
 }
 
 //You can modify anything in here. This is just a basic implementation.
@@ -338,6 +358,21 @@ void nextTrial()
     System.out.println("Penalty: " + penalty);
     System.out.println("WPM w/ penalty: " + (wpm-penalty)); //yes, minus, becuase higher WPM is better
     System.out.println("==================");
+
+    // write to csv; code taken from DHCS slack by Dhruti Kuchibhotla
+    TableRow row = table.addRow();
+    row.setString("user_ID",user_id);
+    row.setInt("cycle_number",currTrialNum);
+    row.setFloat("Total time taken", (finishTime - startTime));
+    row.setFloat("Total letters entered", lettersEnteredTotal);
+    row.setFloat("Total letters expected", lettersExpectedTotal);
+    row.setFloat("Total errors entered", errorsTotal);
+    row.setFloat("Raw WPM", wpm);
+    row.setFloat("Freebie errors", freebieErrors);
+    row.setFloat("Penalty", penalty);
+    row.setFloat("WPM w/ penalty", (wpm-penalty));
+        
+    saveTable(table, fileName);
 
     currTrialNum++; //increment by one so this mesage only appears once when all trials are done
     return;
